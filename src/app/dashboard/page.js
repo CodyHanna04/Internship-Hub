@@ -21,41 +21,40 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
+    const user = auth.currentUser;
+    if (user) {
+      const fetchData = async () => {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           setUserData(userDoc.data());
         }
-
-        const applicationsCollection = collection(db, "applications");
-        const q = query(applicationsCollection, where("userId", "==", user.uid));
+  
+        const q = query(collection(db, "applications"), where("userId", "==", user.uid));
         const applicationSnapshot = await getDocs(q);
-
+  
         let applicationCount = 0;
         let rejectionCount = 0;
         let offerCount = 0;
-
+  
         applicationSnapshot.forEach((doc) => {
           applicationCount++;
           const applicationData = doc.data();
           if (applicationData.status === "rejected") rejectionCount++;
           if (applicationData.status === "offer") offerCount++;
         });
-
+  
         setAnalytics({
           applications: applicationCount,
           rejections: rejectionCount,
-          views: 0,  // Placeholder for now
+          views: 0,
           offers: offerCount
         });
-      } else {
-        router.push("/login");
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
+      };
+  
+      fetchData();
+    }
+  }, []);
+  
 
   const handleLogout = async () => {
     await signOut(auth);

@@ -59,6 +59,7 @@ async function getUserId() {
       alert("Application submitted successfully!");
     } catch (error) {
       console.error("Error submitting application:", error);
+      alert("Application not submitted. Make sure you're logged in.")
     }
   }
   

@@ -9,6 +9,7 @@ import Header from '../components/Header';
 const db = getFirestore(app);
 
 const FindInternships = () => {
+
   const [internships, setInternships] = useState([]);
   const router = useRouter();
 

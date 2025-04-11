@@ -81,5 +81,5 @@ Internship Hub is a web application designed to connect students with local busi
 This project is licensed under the MIT License.
 
 ## Contact
-For any questions or issues, feel free to contact [your email or GitHub profile].
+For any questions or issues, feel free to contact codyhanna8@gmail.com.
 

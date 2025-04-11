@@ -8,9 +8,20 @@ const Header = () => {
   const auth = getAuth(app);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    router.push('/login');
-  };
+    try {
+      // 1. Sign out from Firebase client-side
+      await signOut(auth)
+  
+      // 2. Clear session cookie on server
+      await fetch('/api/logout', { method: 'POST' })
+  
+      // 3. Redirect
+      router.push('/login')
+    } catch (err) {
+      console.error('Logout failed:', err)
+    }
+  }
+  
 
   return (
     <header className="w-full bg-gray-900 bg-opacity-80 py-4 px-6 flex justify-between items-center shadow-lg">

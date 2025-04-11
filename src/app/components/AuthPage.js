@@ -30,12 +30,16 @@ const AuthPage = ({ isSignUp }) => {
     e.preventDefault();
     setError(null);
     try {
+      let userCredential;
+  
       if (isSignUp) {
         if (formData.password !== formData.confirmPassword) {
           setError("Passwords do not match!");
           return;
         }
-        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+  
+        userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+  
         await setDoc(doc(db, "users", userCredential.user.uid), {
           name: formData.name,
           email: formData.email,
@@ -45,13 +49,25 @@ const AuthPage = ({ isSignUp }) => {
           createdAt: new Date(),
         });
       } else {
-        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
       }
+  
+      // 🔐 Get ID token and call session API to set cookie
+      const idToken = await userCredential.user.getIdToken();
+      const sessionRes = await fetch("/api/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
+  
+      if (!sessionRes.ok) throw new Error("Failed to set session");
+  
       router.push("/dashboard");
     } catch (err) {
       setError(err.message);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">

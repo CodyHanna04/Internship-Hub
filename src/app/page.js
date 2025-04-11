@@ -27,7 +27,7 @@ export default function Home() {
       <p className="text-lg text-gray-200 mb-6">Find the perfect internship or connect with local businesses.</p>
       
       <div className="flex space-x-4">
-        <Link href="/internships">
+        <Link href="/find-internships">
           <button className="bg-yellow-400 text-black font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-yellow-500 transform hover:scale-105 transition">
             Browse Internships
           </button>

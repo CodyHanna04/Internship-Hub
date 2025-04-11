@@ -16,22 +16,20 @@ const Profile = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
+    const user = auth.currentUser;
+    if (user) {
+      const fetchData = async () => {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
-          setUserData(userDoc.data());
-          // Assuming you have a field called 'resume' in the user data
-          setResume(userDoc.data().resume);
+          const data = userDoc.data();
+          setUserData(data);
+          setResume(data.resume);
         }
-      } else {
-        router.push("/login");  // Redirect to login if user is not authenticated
-      }
-    });
-
-    // Cleanup function to unsubscribe from auth state change
-    return () => unsubscribe();
-  }, [router]);
+      };
+  
+      fetchData();
+    }
+  }, []);  
 
   const handleLogout = async () => {
     await signOut(auth);
